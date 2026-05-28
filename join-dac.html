@@ -147,6 +147,10 @@ nav{position:fixed;top:0;left:0;width:100%;z-index:100;padding:1rem 4rem;display
       250+ Active Members
     </div>
     <div class="info-chip">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      First Meeting: Aug 20, 2026
+    </div>
+    <div class="info-chip">
       <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       Free to Join
     </div>
@@ -183,25 +187,25 @@ nav{position:fixed;top:0;left:0;width:100%;z-index:100;padding:1rem 4rem;display
       <div class="field-group">
         <div class="field" id="f-fname">
           <label>First Name <span class="req">*</span></label>
-          <input type="text" id="fname" placeholder="" autocomplete="given-name"/>
+          <input type="text" id="fname" placeholder="Aryan" autocomplete="given-name"/>
           <div class="field-error">Please enter your first name</div>
         </div>
         <div class="field" id="f-lname">
           <label>Last Name <span class="req">*</span></label>
-          <input type="text" id="lname" placeholder="" autocomplete="family-name"/>
+          <input type="text" id="lname" placeholder="Sharma" autocomplete="family-name"/>
           <div class="field-error">Please enter your last name</div>
         </div>
       </div>
 
       <div class="field" id="f-email">
         <label>Email Address <span class="req">*</span></label>
-        <input type="email" id="email" placeholder="" autocomplete="email"/>
+        <input type="email" id="email" placeholder="aryan@dgu.ac.in" autocomplete="email"/>
         <div class="field-error">Please enter a valid email address</div>
       </div>
 
       <div class="field" id="f-phone">
         <label>Contact Number <span class="req">*</span></label>
-        <input type="tel" id="phone" placeholder="" autocomplete="tel"/>
+        <input type="tel" id="phone" placeholder="+91 98765 43210" autocomplete="tel"/>
         <div class="field-error">Please enter a valid 10-digit number</div>
       </div>
     </div>
@@ -220,7 +224,6 @@ nav{position:fixed;top:0;left:0;width:100%;z-index:100;padding:1rem 4rem;display
             <option>2nd Year</option>
             <option>3rd Year</option>
             <option>4th Year</option>
-            <option>5th Year</option>
           </select>
           <div class="field-error">Please select your year</div>
         </div>
@@ -228,16 +231,16 @@ nav{position:fixed;top:0;left:0;width:100%;z-index:100;padding:1rem 4rem;display
           <label>Branch / Program <span class="req">*</span></label>
           <select id="branch">
             <option value="" disabled selected>Select branch</option>
-            <option>B.Tech</option>
-            <option>BBA</option>
+            <option>B.Tech CSE</option>
+            <option>B.Tech CSE (AI & ML)</option>
+            <option>B.Tech CSE (Data Science)</option>
+            <option>B.Tech ECE</option>
+            <option>B.Tech Mechanical</option>
+            <option>B.Tech Civil</option>
             <option>BCA</option>
-            <option>B.COM</option>
+            <option>BBA</option>
             <option>MBA</option>
-            <option>BBA+MBA Integrated</option>
-            <option>BA/BBA+LLB</option>
-            <option>BLS</option>
-            <option>BSC</option>
-            <option>PHARMA</option>
+            <option>MCA</option>
             <option>Other</option>
           </select>
           <div class="field-error">Please select your branch</div>
@@ -246,7 +249,7 @@ nav{position:fixed;top:0;left:0;width:100%;z-index:100;padding:1rem 4rem;display
 
       <div class="field" id="f-enrollment">
         <label>Enrollment / Roll Number <span class="req">*</span></label>
-        <input type="text" id="enrollment" placeholder=""/>
+        <input type="text" id="enrollment" placeholder="e.g. DGU2024CSE001"/>
         <div class="field-error">Please enter your enrollment number</div>
       </div>
 
@@ -435,11 +438,47 @@ function prevStep(){
 }
 
 function submitForm(){
-  document.getElementById('step3').classList.remove('active');
-  document.getElementById('progressBar').style.display='none';
-  document.getElementById('formNav').style.display='none';
-  document.getElementById('successScreen').classList.add('show');
-  window.scrollTo({top:0,behavior:'smooth'});
+  const btn = document.getElementById('btnNext');
+  btn.innerHTML = 'Submitting... <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>';
+  btn.disabled = true;
+
+  const interests = [...document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked')]
+    .map(cb => cb.value).join(', ');
+
+  const data = {
+    firstName:  document.getElementById('fname').value.trim(),
+    lastName:   document.getElementById('lname').value.trim(),
+    email:      document.getElementById('email').value.trim(),
+    phone:      document.getElementById('phone').value.trim(),
+    year:       document.getElementById('year').value,
+    branch:     document.getElementById('branch').value,
+    enrollment: document.getElementById('enrollment').value.trim(),
+    interests:  interests || 'None selected',
+    whyJoin:    document.getElementById('why').value.trim(),
+    value:      document.getElementById('value').value.trim(),
+    extra:      document.getElementById('extra').value.trim()
+  };
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlCMaJ0Qa8SiRYLxDW_HFlrHKVEO52SnJSXFjSPwMLy-ELFaisYc6b9n_Mpg2PfRuxxQ/exec';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(() => {
+    document.getElementById('step3').classList.remove('active');
+    document.getElementById('progressBar').style.display='none';
+    document.getElementById('formNav').style.display='none';
+    document.getElementById('successScreen').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  })
+  .catch(() => {
+    btn.innerHTML = 'Submit Application <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+    btn.disabled = false;
+    alert('Something went wrong. Please check your internet connection and try again.');
+  });
 }
 
 function charCount(id,countId,max){
