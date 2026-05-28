@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -24,6 +25,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 html{scroll-behavior:smooth}
 body{background:var(--black);color:var(--white);font-family:'Outfit',sans-serif;overflow-x:hidden}
 
+/* Apply Orbitron to all numeric content */
+.stat-num,
+.event-date,
+.init-num,
+.nav-num{
+    font-family:'Orbitron',sans-serif !important;
+}
 /* ── NAVBAR ── */
 nav{
   position:fixed;top:0;left:0;width:100%;z-index:100;
@@ -56,7 +64,7 @@ nav{
 /* Floating Social Bar */
 .floating-social{
     position:fixed;
-    right:0px;
+    right:-0.1px;
     top:50%;
     transform:translateY(-50%);
     z-index:999;
@@ -428,15 +436,15 @@ footer a{color:#A78BFA;text-decoration:none}
 <!-- STATS -->
 <div class="stats">
   <div class="stat fade-in">
-    <div class="stat-num">250+</div>
+    <div class="stat-num" data-target="250">0</div>
     <div class="stat-label">Active Members</div>
   </div>
   <div class="stat fade-in">
-    <div class="stat-num">15+</div>
+    <div class="stat-num" data-target="15">0</div>
     <div class="stat-label">Upcoming Projects</div>
   </div>
   <div class="stat fade-in">
-    <div class="stat-num">8+</div>
+    <div class="stat-num" data-target="8">0</div>
     <div class="stat-label">International Industry Partners</div>
   </div>
 </div>
@@ -712,6 +720,43 @@ function toggleDrawer(){
 
 /* Close drawer on Escape key */
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+const counters = document.querySelectorAll('.stat-num');
+
+const countObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+
+        if(entry.isIntersecting){
+
+            const counter = entry.target;
+            const target = +counter.dataset.target;
+
+            let count = 0;
+
+            const updateCounter = () => {
+
+                const increment = target / 80;
+
+                if(count < target){
+                    count += increment;
+                    counter.innerText = Math.ceil(count);
+                    requestAnimationFrame(updateCounter);
+                }else{
+                    counter.innerText = target + '+';
+                }
+            };
+
+            updateCounter();
+
+            countObserver.unobserve(counter);
+        }
+    });
+},{
+    threshold:0.5
+});
+
+counters.forEach(counter => {
+    countObserver.observe(counter);
+});
 </script>
 </body>
 </html>
