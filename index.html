@@ -269,10 +269,29 @@ section{padding:7rem 5rem}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;margin-top:4rem}
 .about-img-wrap{position:relative}
 .about-img{width:100%;object-fit:cover;aspect-ratio:4/3;filter:brightness(.72) saturate(.85)}
+.about-slider{
+    position:relative;
+    width:100%;
+    aspect-ratio:4/3;
+    overflow:hidden;
+}
+
+.about-slider .about-img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity 1s ease;
+    filter:brightness(.72) saturate(.85);
+}
+
+.about-slider .about-img.active{
+    opacity:1;
+}
 .about-frame{position:absolute;inset:0;border:1px solid var(--purple-border);transform:translate(14px,14px);z-index:-1}
-.about-img-badge{position:absolute;bottom:-2rem;right:-2rem;background:var(--black-mid);border:1px solid var(--border);padding:1.2rem 1.6rem}
-.about-img-badge strong{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;color:#C4B5FD;display:block}
-.about-img-badge span{font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+
 .about-text p{color:var(--muted);line-height:1.9;font-weight:300;margin-bottom:1.3rem;font-size:.93rem}
 .about-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.8rem}
 .tag{background:var(--purple-dim);border:1px solid var(--purple-border);color:#C4B5FD;padding:.28rem .9rem;border-radius:2px;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
@@ -454,13 +473,17 @@ footer a{color:#A78BFA;text-decoration:none}
   <div class="section-tag">Who We Are</div>
   <div class="about-grid">
     <div class="about-img-wrap fade-in">
-      <img src="1773732510phpG1y4R4.jpeg" alt="DGU Campus" class="about-img"/>
-      <div class="about-frame"></div>
-      <div class="about-img-badge">
-        <strong>DGU</strong>
-        <span>Dehradun, Uttarakhand</span>
-      </div>
-    </div>
+
+  <div class="about-slider">
+    <img src="1773732510phpG1y4R4.jpeg" class="about-img active" alt="DAC Image 1">
+    <img src="under.png" class="about-img" alt="DAC Image 2">
+    <img src="patron.png" class="about-img" alt="DAC Image 3">
+  </div>
+
+  <div class="about-frame"></div>
+
+  
+</div>
 <div class="floating-social">
    
 
@@ -759,6 +782,21 @@ const countObserver = new IntersectionObserver((entries) => {
 counters.forEach(counter => {
     countObserver.observe(counter);
 });
+/* ABOUT SLIDESHOW */
+const slides = document.querySelectorAll('.about-slider .about-img');
+
+let currentSlide = 0;
+
+setInterval(() => {
+
+    slides[currentSlide].classList.remove('active');
+
+    currentSlide = (currentSlide + 1) % slides.length;
+
+    slides[currentSlide].classList.add('active');
+
+}, 3000);
+
 </script>
 </body>
 </html>
